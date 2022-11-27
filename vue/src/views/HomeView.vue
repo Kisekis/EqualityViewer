@@ -1,9 +1,15 @@
 <template>
   <div style="padding: 10px">
     <!--    功能区域-->
-    <div style="margin: 0 0 10px">
-      <el-button type="primary">Import</el-button>
-      <el-button type="primary">Export</el-button>
+    <div style="display: flex">
+      <el-upload
+          class="upload-demo"
+          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+          style="margin-right: 10px"
+      >
+        <el-button type="primary">Upload</el-button>
+      </el-upload>
+      <el-button type="primary">Download</el-button>
     </div>
     <el-table :data="tableData" border stripe style="width: 100%" :max-height="tableHeight">
       <el-table-column prop="code1" label="Code1" width="380"/>
@@ -11,7 +17,7 @@
       <el-table-column
           prop="result"
           label="Result"
-          width="160"
+          width="155"
           :filters="[
             { text: 'Equal', value: 'Equal' },
             { text: 'Inequal', value: 'Inequal' },
@@ -23,15 +29,13 @@
           <el-tag
               :type="getType(scope.row.result)"
               disable-transitions
+              style="width: 130px"
           >{{ scope.row.result }}</el-tag
           >
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="Operations">
-
-        <template #default>
-          <el-button size="small" @click="handleClick">Change result</el-button>
-        </template>
+        <el-button @click="handleChange()">Change result</el-button>
       </el-table-column>
     </el-table>
   </div>
@@ -39,13 +43,15 @@
 
 <script>
 // @ is an alias to /src
-
+import { UploadFilled } from '@element-plus/icons-vue'
+import { ref } from 'vue'
 
 export default {
   name: 'HomeView',
-  components: {},
+  components: {UploadFilled},
   data() {
     return {
+      visible : ref(false),
       tableHeight: 0,
       tableData:[
         {
@@ -69,13 +75,7 @@ export default {
       total:10
     }
   },methods : {
-    handleClick() {
-
-    },
-    handleSizeChange() {
-
-    },
-    handleCurrentChange() {
+    handleChange() {
 
     },
     filterResult(value,row) {

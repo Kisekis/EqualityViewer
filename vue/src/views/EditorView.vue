@@ -41,7 +41,7 @@ export default {
         }
       ],
       content1: '',
-      content2: ''
+      content2: 'this is a sample code \n implements code difference'
     }
   },methods : {
     diffCode(){
@@ -55,7 +55,7 @@ export default {
         mode: "text/html",
         highlightDifferences: true,
         // connect: 'align',
-        readOnly: true,
+        readOnly: false,
       });
     },
     getType(str) {

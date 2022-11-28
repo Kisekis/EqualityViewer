@@ -45,7 +45,10 @@ public class SourceCodePairController implements CodesApi {
         SourceCodePairDto ret = null;
         for(SourceCodePair pair : data) {
             if(pair.id == codesId) {
-                sourceCodePairService.changeResult(pair,sourceCodePairMapper.toSourceCodePair(sourceCodePairDto).result);
+                sourceCodePairService.changeResult(pair,
+                        sourceCodePairMapper.toSourceCodePair(sourceCodePairDto).result);
+                sourceCodePairService.changeLevel(pair,
+                        sourceCodePairMapper.toSourceCodePair(sourceCodePairDto).level);
                 ret = sourceCodePairMapper.toSourceCodePairDto(pair);
                 break;
             }

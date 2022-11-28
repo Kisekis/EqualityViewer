@@ -1,5 +1,6 @@
 package com.nime.eqviewer.service;
 
+import com.nime.eqviewer.model.Confilevel;
 import com.nime.eqviewer.model.ResultType;
 import com.nime.eqviewer.model.SourceCodePair;
 
@@ -11,4 +12,6 @@ public interface SourceCodePairService {
     public void checkSourceCodePairs();
 
     public void changeResult(SourceCodePair pair, ResultType type);
+
+    public void changeLevel(SourceCodePair pair, Confilevel level);
 }

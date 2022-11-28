@@ -43,4 +43,8 @@ public class SourceCodePairServiceImpl implements SourceCodePairService{
     public void changeResult(SourceCodePair pair, ResultType type) {
         pair.result = type;
     }
+    @Override
+    public void changeLevel(SourceCodePair pair, Confilevel level) {
+        pair.level = level;
+    }
 }

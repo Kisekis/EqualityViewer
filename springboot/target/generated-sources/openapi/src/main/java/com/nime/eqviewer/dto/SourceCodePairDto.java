@@ -21,7 +21,7 @@ import javax.annotation.Generated;
  * SourceCodePairDto
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-11-27T23:03:00.958067500+08:00[Asia/Hong_Kong]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-11-28T15:17:24.572593+08:00[Asia/Hong_Kong]")
 public class SourceCodePairDto   {
 
   @JsonProperty("code1")
@@ -36,6 +36,9 @@ public class SourceCodePairDto   {
   @JsonProperty("level")
   private ConfilevelDto level;
 
+  @JsonProperty("id")
+  private Integer id;
+
   public SourceCodePairDto code1(SourceCodeDto code1) {
     this.code1 = code1;
     return this;
@@ -45,8 +48,8 @@ public class SourceCodePairDto   {
    * Get code1
    * @return code1
   */
-  @Valid 
-  @Schema(name = "code1", required = false)
+  @NotNull @Valid 
+  @Schema(name = "code1", required = true)
   public SourceCodeDto getCode1() {
     return code1;
   }
@@ -64,8 +67,8 @@ public class SourceCodePairDto   {
    * Get code2
    * @return code2
   */
-  @Valid 
-  @Schema(name = "code2", required = false)
+  @NotNull @Valid 
+  @Schema(name = "code2", required = true)
   public SourceCodeDto getCode2() {
     return code2;
   }
@@ -83,8 +86,8 @@ public class SourceCodePairDto   {
    * Get result
    * @return result
   */
-  @Valid 
-  @Schema(name = "result", required = false)
+  @NotNull @Valid 
+  @Schema(name = "result", required = true)
   public ResultTypeDto getResult() {
     return result;
   }
@@ -102,14 +105,33 @@ public class SourceCodePairDto   {
    * Get level
    * @return level
   */
-  @Valid 
-  @Schema(name = "level", required = false)
+  @NotNull @Valid 
+  @Schema(name = "level", required = true)
   public ConfilevelDto getLevel() {
     return level;
   }
 
   public void setLevel(ConfilevelDto level) {
     this.level = level;
+  }
+
+  public SourceCodePairDto id(Integer id) {
+    this.id = id;
+    return this;
+  }
+
+  /**
+   * Get id
+   * @return id
+  */
+  @NotNull 
+  @Schema(name = "id", required = true)
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
   }
 
   @Override
@@ -124,12 +146,13 @@ public class SourceCodePairDto   {
     return Objects.equals(this.code1, sourceCodePair.code1) &&
         Objects.equals(this.code2, sourceCodePair.code2) &&
         Objects.equals(this.result, sourceCodePair.result) &&
-        Objects.equals(this.level, sourceCodePair.level);
+        Objects.equals(this.level, sourceCodePair.level) &&
+        Objects.equals(this.id, sourceCodePair.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(code1, code2, result, level);
+    return Objects.hash(code1, code2, result, level, id);
   }
 
   @Override
@@ -140,6 +163,7 @@ public class SourceCodePairDto   {
     sb.append("    code2: ").append(toIndentedString(code2)).append("\n");
     sb.append("    result: ").append(toIndentedString(result)).append("\n");
     sb.append("    level: ").append(toIndentedString(level)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("}");
     return sb.toString();
   }

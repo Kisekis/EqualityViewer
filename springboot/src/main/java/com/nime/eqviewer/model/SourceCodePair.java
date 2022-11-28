@@ -6,11 +6,14 @@ public class SourceCodePair {
     public ResultType result;
 
     public Confilevel level;
-    public SourceCodePair(SourceCode code1,SourceCode code2,ResultType result) {
+
+    public int id;
+    public SourceCodePair(SourceCode code1,SourceCode code2,ResultType result,int id) {
         this.code1 = code1;
         this.code2 = code2;
         this.result = result;
         level = result == ResultType.SAME ?Confilevel.RELIABLE :Confilevel.UNRELIABLE;
+        this.id = id;
     }
 
     @Override

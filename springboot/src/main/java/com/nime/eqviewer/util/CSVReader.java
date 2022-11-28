@@ -17,6 +17,7 @@ public class CSVReader {
     private HashMap<String,SourceCode> map;
 
     private static int globalId = 0;
+    private static int globalPairId = 0;
     public CSVReader(String path) {
         this.folderPath = path;
         data = new ArrayList<>();
@@ -45,7 +46,8 @@ public class CSVReader {
                         map.put(path2,new SourceCode(path2,globalId));
                         globalId++;
                     }
-                    data.add(new SourceCodePair(map.get(path1),map.get(path2),type));
+                    data.add(new SourceCodePair(map.get(path1),map.get(path2),type,globalPairId));
+                    globalPairId++;
                 }
                 count++;
             }

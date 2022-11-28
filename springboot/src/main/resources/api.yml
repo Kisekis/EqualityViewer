@@ -24,6 +24,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /codes/{codesId}:
+    put:
+      summary: Update a source_code_pairs
+      operationId: updateSourceCodePairs
+      parameters:
+        - in: path
+          name: codesId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: A JSON object containing code pair
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SourceCodePair"
+      responses:
+        200:
+          description: Updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SourceCodePair"
 components:
   schemas:
     Confilevel:
@@ -51,9 +74,11 @@ components:
     SourceCodePair:
       type: object
       required:
-        - SourceCode
-        - ResultType
-        - Confilevel
+        - code1
+        - code2
+        - result
+        - level
+        - id
       properties:
         code1:
           $ref: "#/components/schemas/SourceCode"
@@ -63,6 +88,8 @@ components:
           $ref: "#/components/schemas/ResultType"
         level:
           $ref: "#/components/schemas/Confilevel"
+        id:
+          type: integer
     SourceCodePairs:
       type: array
       items:

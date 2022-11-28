@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-11-27T23:03:00.958067500+08:00[Asia/Hong_Kong]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-11-28T15:17:24.572593+08:00[Asia/Hong_Kong]")
 @Validated
 @Tag(name = "codes", description = "the codes API")
 public interface CodesApi {
@@ -65,7 +65,45 @@ public interface CodesApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"code2\" : { \"path\" : \"path\", \"id\" : 0 }, \"code1\" : { \"path\" : \"path\", \"id\" : 0 } }";
+                    String exampleString = "{ \"code2\" : { \"path\" : \"path\", \"id\" : 0 }, \"code1\" : { \"path\" : \"path\", \"id\" : 0 }, \"id\" : 6 }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
+     * PUT /codes/{codesId} : Update a source_code_pairs
+     *
+     * @param codesId  (required)
+     * @param sourceCodePairDto A JSON object containing code pair (optional)
+     * @return Updated successfully (status code 200)
+     */
+    @Operation(
+        operationId = "updateSourceCodePairs",
+        summary = "Update a source_code_pairs",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Updated successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  SourceCodePairDto.class)))
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.PUT,
+        value = "/codes/{codesId}",
+        produces = { "application/json" },
+        consumes = { "application/json" }
+    )
+    default ResponseEntity<SourceCodePairDto> updateSourceCodePairs(
+        @Parameter(name = "codesId", description = "", required = true, schema = @Schema(description = "")) @PathVariable("codesId") Integer codesId,
+        @Parameter(name = "SourceCodePairDto", description = "A JSON object containing code pair", schema = @Schema(description = "")) @Valid @RequestBody(required = false) SourceCodePairDto sourceCodePairDto
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"code2\" : { \"path\" : \"path\", \"id\" : 0 }, \"code1\" : { \"path\" : \"path\", \"id\" : 0 }, \"id\" : 6 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

@@ -11,17 +11,20 @@
       </el-upload>
       <el-button type="primary">Download</el-button>
     </div>
-    <el-table :data="tableData" border stripe style="width: 100%" :max-height="tableHeight">
-      <el-table-column prop="code1" label="Code1" width="380"/>
-      <el-table-column prop="code2" label="Code2" width="380" />
+    <el-table :data="tableData" border style="width: 100%" :max-height="tableHeight" :row-class-name="tableRowClassName">
+      <el-table-column prop="id" label="ID" width="80" sortable/>
+      <el-table-column prop="id1" label="ID1" width="50"/>
+      <el-table-column prop="code1" label="Code1" width="290"/>
+      <el-table-column prop="id2" label="ID2" width="50"/>
+      <el-table-column prop="code2" label="Code2" width="290" />
       <el-table-column
           prop="result"
           label="Result"
           width="155"
           :filters="[
-            { text: 'Equal', value: 'Equal' },
-            { text: 'Inequal', value: 'Inequal' },
-            { text: 'Same', value: 'Same' },
+            { text: 'EQUAL', value: 'EQUAL' },
+            { text: 'INEQUAL', value: 'INEQUAL' },
+            { text: 'SAME', value: 'SAME' },
           ]"
           :filter-method="filterResult"
           filter-placement="bottom-end">
@@ -34,7 +37,7 @@
           >
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="Operations">
+      <el-table-column label="Operations">
         <el-button @click="handleChange()">Change result</el-button>
       </el-table-column>
     </el-table>
@@ -45,6 +48,7 @@
 // @ is an alias to /src
 import { UploadFilled } from '@element-plus/icons-vue'
 import { ref } from 'vue'
+import request from "@/utils/request";
 
 export default {
   name: 'HomeView',
@@ -53,28 +57,46 @@ export default {
     return {
       visible : ref(false),
       tableHeight: 0,
-      tableData:[
-        {
-          code1: 'AAA',
-          code2: 'BBB',
-          result: 'Equal'
-        },
-        {
-          code1: 'AAAA',
-          code2: 'BBBB',
-          result: 'Inequal'
-        },
-        {
-          code1: 'AAAAA',
-          code2: 'BBBBB',
-          result: 'Same'
-        },
-      ],
+      tableData:[],
       search:'',
       currentPage:1,
-      total:10
+      total:10,
+      tableRowClassName: ({row,rowIndex}) => {
+        switch(row.level) {
+          case "UNRELIABLE":
+            return 'warning-row'
+          case "RELIABLE":
+            return 'success-row'
+          case "SUSPICIOUS":
+            return 'danger-row'
+        }
+      }
     }
-  },methods : {
+  },
+  created() {
+    this.load()
+  },
+  methods : {
+    load() {
+      request.get("api/codes").then(
+          res=>{
+            console.log(res)
+            for (let entry of res) {
+              this.tableData.push(
+                  {
+                    id: entry.id,
+                    id1: entry.code1.id,
+                    id2: entry.code2.id,
+                    code1: entry.code1.path,
+                    code2: entry.code2.path,
+                    result: entry.result,
+                    level: entry.level
+                  }
+              );
+            }
+          }
+      );
+    },
     handleChange() {
 
     },
@@ -83,11 +105,11 @@ export default {
     },
     getType(str) {
       switch (str) {
-        case 'Equal':
+        case 'EQUAL':
           return '';
-        case 'Inequal':
+        case 'INEQUAL':
           return 'danger';
-        case 'Same':
+        case 'SAME':
           return 'success';
       }
     }
@@ -97,3 +119,14 @@ export default {
     }
 }
 </script>
+<style>
+.el-table .warning-row {
+  --el-table-tr-bg-color: var(--el-color-warning-light-9);
+}
+.el-table .success-row {
+  --el-table-tr-bg-color: var(--el-color-success-light-9);
+}
+.el-table .danger-row {
+  --el-table-tr-bg-color: var(--el-color-danger-light-9);
+}
+</style>

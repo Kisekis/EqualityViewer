@@ -56,12 +56,16 @@ public class SourceCodePairMapperImpl implements SourceCodePairMapper {
         SourceCode code1 = null;
         SourceCode code2 = null;
         ResultType result = null;
+        int id = 0;
 
         code1 = sourceCodeDtoToSourceCode( sourceCodePairDto.getCode1() );
         code2 = sourceCodeDtoToSourceCode( sourceCodePairDto.getCode2() );
         result = resultTypeDtoToResultType( sourceCodePairDto.getResult() );
+        if ( sourceCodePairDto.getId() != null ) {
+            id = sourceCodePairDto.getId();
+        }
 
-        SourceCodePair sourceCodePair = new SourceCodePair( code1, code2, result );
+        SourceCodePair sourceCodePair = new SourceCodePair( code1, code2, result, id );
 
         sourceCodePair.level = confilevelDtoToConfilevel( sourceCodePairDto.getLevel() );
 
@@ -80,6 +84,7 @@ public class SourceCodePairMapperImpl implements SourceCodePairMapper {
         sourceCodePairDto.setCode2( sourceCodeToSourceCodeDto( sourceCodePair.code2 ) );
         sourceCodePairDto.setResult( resultTypeToResultTypeDto( sourceCodePair.result ) );
         sourceCodePairDto.setLevel( confilevelToConfilevelDto( sourceCodePair.level ) );
+        sourceCodePairDto.setId( sourceCodePair.id );
 
         return sourceCodePairDto;
     }

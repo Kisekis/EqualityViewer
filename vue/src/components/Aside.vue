@@ -5,7 +5,7 @@
         <h5 class="mb-2"></h5>
         <el-menu
             router
-            default-active="table"
+            default-active="home"
             class="el-menu-vertical-demo">
           <el-menu-item index="home">首页</el-menu-item>
           <el-sub-menu index="1-2">

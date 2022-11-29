@@ -4,6 +4,8 @@ import com.nime.eqviewer.model.SourceCode;
 import com.nime.eqviewer.model.SourceCodePair;
 import com.nime.eqviewer.util.CSVReader;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,6 +14,8 @@ public class MemoryRepo {
     private List<SourceCodePair> data;
     private HashMap<String, SourceCode>map;
     private MemoryRepo() {
+        Path path = Paths.get("./");
+        System.out.println(path);
         CSVReader reader = new CSVReader("./springboot/src/main/resources/");
         reader.read();
         data = reader.getData();

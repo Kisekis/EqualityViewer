@@ -21,7 +21,7 @@ const routes = [
     component: GraphView
   },
   {
-    path: '/',
+    path: '/home',
     name: 'Home',
     component: HomeView
   }

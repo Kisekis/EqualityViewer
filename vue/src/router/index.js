@@ -1,13 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import TableView from '@/views/TableView.vue'
 import EditorView from "@/views/EditorView";
 import GraphView from "@/views/GraphView";
+import HomeView from "@/views/HomeView";
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
+    path: '/table',
+    name: 'table',
+    component: TableView
   },
   {
     path: '/editor',
@@ -18,6 +19,11 @@ const routes = [
     path: '/graph',
     name: 'graph',
     component: GraphView
+  },
+  {
+    path: '/',
+    name: 'Home',
+    component: HomeView
   }
 ]
 

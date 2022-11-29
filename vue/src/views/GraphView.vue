@@ -1,100 +1,219 @@
 <template>
   <div style="padding: 10px">
-    <h2>Vue.js and D3 Line Chart</h2>
-    <svg></svg>
+    <div class="container">
+      </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import * as d3 from "d3";
-const data = [
-  { date: "24-Apr-07", amount: 93.24 },
-  { date: "25-Apr-07", amount: 95.35 },
-  { date: "26-Apr-07", amount: 98.84 },
-  { date: "27-Apr-07", amount: 99.92 },
-  { date: "30-Apr-07", amount: 99.8 },
-  { date: "1-May-07", amount: 99.47 },
-  { date: "2-May-07", amount: 100.39 },
-  { date: "3-May-07", amount: 100.4 },
-  { date: "4-May-07", amount: 100.81 },
-  { date: "7-May-07", amount: 103.92 },
-  { date: "8-May-07", amount: 105.06 },
-  { date: "9-May-07", amount: 106.88 },
-  { date: "10-May-07", amount: 107.34 },
-]
+import request from "@/utils/request";
+
 export default {
   name: 'GraphView',
   components: {
+
   },
   data() {
     return {
-
+      graphData : [],
+      testData: {
+        nodes : [
+          {id: "test1",
+          group: 1},
+          {id: "test2",
+            group: 2},
+          {id: "test1",
+            group: 1},
+          {id: "test2",
+            group: 2},
+          {id: "test1",
+            group: 1},
+          {id: "test2",
+            group: 2},
+          {id: "test1",
+            group: 1},
+          {id: "test2",
+            group: 2}
+        ],
+        links : [
+          // {
+          //   source: "test1",
+          //   target: "test2",
+          //   value: 2
+          // }
+        ]
+      },
     }
   },methods : {
-
-  },
-    mounted() {
-      const width = 800;
-      const height = 500;
-
-      const svg = d3.select("svg").attr("width", width).attr("height", height);
-      const g = svg.append("g");
-
-      //2. Parse the dates
-      const parseTime = d3.timeParse("%d-%b-%y");
-
-      //3. Creating the Chart Axes
-      const x = d3
-          .scaleTime()
-          .domain(
-              d3.extent(data, function (d) {
-                return parseTime(d.date);
-              })
-          )
-          .rangeRound([0, width]);
-
-      const y = d3
-          .scaleLinear()
-          .domain(
-              d3.extent(data, function (d) {
-                return d.amount;
-              })
-          )
-          .rangeRound([height, 0]);
-
-      //4. Creating a Line
-      const line = d3
-          .line()
-          .x(function (d) {
-            return x(parseTime(d.date));
-          })
-          .y(function (d) {
-            return y(d.amount);
-          });
-
-      //5. Appending the Axes to the Chart
-      g.append("g")
-          .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(x));
-
-      g.append("g")
-          .call(d3.axisLeft(y))
-          .append("text")
-          .attr("fill", "#000")
-          .attr("transform", "rotate(-90)")
-          .attr("y", 6)
-          .attr("dy", "0.71em")
-          .attr("text-anchor", "end")
-          .text("Price ($)");
-
-      //6. Appending a path to the Chart
-      g.append("path")
-          .datum(data)
-          .attr("fill", "none")
-          .attr("stroke", "steelblue")
-          .attr("stroke-width", 1.5)
-          .attr("d", line);
+    load() {
+      request.get("api/codes").then(
+          res => {
+            console.log(res)
+            for (let entry of res) {
+              this.graphData.push(
+                  {
+                    id: entry.id,
+                    id1: entry.code1.id,
+                    id2: entry.code2.id,
+                    code1: entry.code1.path,
+                    code2: entry.code2.path,
+                    result: entry.result,
+                    level: entry.level
+                  }
+              );
+            }
+          }
+      );
     },
+    initGraph({
+                nodes, // an iterable of node objects (typically [{id}, …])
+                links // an iterable of link objects (typically [{source, target}, …])
+              }, {
+                nodeId = d => d.id, // given d in nodes, returns a unique identifier (string)
+                nodeGroup, // given d in nodes, returns an (ordinal) value for color
+                nodeGroups, // an array of ordinal values representing the node groups
+                nodeTitle, // given d in nodes, a title string
+                nodeFill = "currentColor", // node stroke fill (if not using a group color encoding)
+                nodeStroke = "#fff", // node stroke color
+                nodeStrokeWidth = 1.5, // node stroke width, in pixels
+                nodeStrokeOpacity = 1, // node stroke opacity
+                nodeRadius = 5, // node radius, in pixels
+                nodeStrength,
+                linkSource = ({source}) => source, // given d in links, returns a node identifier string
+                linkTarget = ({target}) => target, // given d in links, returns a node identifier string
+                linkStroke = "#999", // link stroke color
+                linkStrokeOpacity = 0.6, // link stroke opacity
+                linkStrokeWidth = 1.5, // given d in links, returns a stroke width in pixels
+                linkStrokeLinecap = "round", // link stroke linecap
+                linkStrength,
+                colors = d3.schemeTableau10, // an array of color strings, for the node groups
+                width = 640, // outer width, in pixels
+                height = 400, // outer height, in pixels
+                // invalidation // when this promise resolves, stop the simulation
+              } = {})
+    {
+      const N = d3.map(nodes, nodeId).map(intern);
+      const LS = d3.map(links, linkSource).map(intern);
+      const LT = d3.map(links, linkTarget).map(intern);
+      if (nodeTitle === undefined) nodeTitle = (_, i) => N[i];
+      const T = nodeTitle == null ? null : d3.map(nodes, nodeTitle);
+      const G = nodeGroup == null ? null : d3.map(nodes, nodeGroup).map(intern);
+      const W = typeof linkStrokeWidth !== "function" ? null : d3.map(links, linkStrokeWidth);
+      const L = typeof linkStroke !== "function" ? null : d3.map(links, linkStroke);
+
+      // Replace the input nodes and links with mutable objects for the simulation.
+      nodes = d3.map(nodes, (_, i) => ({id: N[i]}));
+      links = d3.map(links, (_, i) => ({source: LS[i], target: LT[i]}));
+
+      // Compute default domains.
+      if (G && nodeGroups === undefined) nodeGroups = d3.sort(G);
+
+      // Construct the scales.
+      const color = nodeGroup == null ? null : d3.scaleOrdinal(nodeGroups, colors);
+
+      // Construct the forces.
+      const forceNode = d3.forceManyBody();
+      const forceLink = d3.forceLink(links).id(({index: i}) => N[i]);
+      if (nodeStrength !== undefined) forceNode.strength(nodeStrength);
+      if (linkStrength !== undefined) forceLink.strength(linkStrength);
+
+      const simulation = d3.forceSimulation(nodes)
+          .force("link", forceLink)
+          .force("charge", forceNode)
+          .force("center",  d3.forceCenter())
+          .on("tick", ticked);
+
+      const svg = d3.select(".container")
+          .append("svg")
+          .attr("width", width)
+          .attr("height", height)
+          .attr("viewBox", [-width / 2, -height / 2, width, height])
+          .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
+
+      const link = svg.append("g")
+          .attr("stroke", typeof linkStroke !== "function" ? linkStroke : null)
+          .attr("stroke-opacity", linkStrokeOpacity)
+          .attr("stroke-width", typeof linkStrokeWidth !== "function" ? linkStrokeWidth : null)
+          .attr("stroke-linecap", linkStrokeLinecap)
+          .selectAll("line")
+          .data(links)
+          .join("line");
+
+      const node = svg.append("g")
+          .attr("fill", nodeFill)
+          .attr("stroke", nodeStroke)
+          .attr("stroke-opacity", nodeStrokeOpacity)
+          .attr("stroke-width", nodeStrokeWidth)
+          .selectAll("circle")
+          .data(nodes)
+          .join("circle")
+          .attr("r", nodeRadius)
+          .call(drag(simulation));
+
+      if (W) link.attr("stroke-width", ({index: i}) => W[i]);
+      if (L) link.attr("stroke", ({index: i}) => L[i]);
+      if (G) node.attr("fill", ({index: i}) => color(G[i]));
+      if (T) node.append("title").text(({index: i}) => T[i]);
+      // if (invalidation != null) invalidation.then(() => simulation.stop());
+
+      function intern(value) {
+        return value !== null && typeof value === "object" ? value.valueOf() : value;
+      }
+
+      function ticked() {
+        link
+            .attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
+
+        node
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y);
+      }
+
+      function drag(simulation) {
+        function dragstarted(event) {
+          if (!event.active) simulation.alphaTarget(0.3).restart();
+          event.subject.fx = event.subject.x;
+          event.subject.fy = event.subject.y;
+        }
+
+        function dragged(event) {
+          event.subject.fx = event.x;
+          event.subject.fy = event.y;
+        }
+
+        function dragended(event) {
+          if (!event.active) simulation.alphaTarget(0);
+          event.subject.fx = null;
+          event.subject.fy = null;
+        }
+
+        return d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended);
+      }
+    }
+  },created() {
+      this.load()
+    },
+    mounted() {
+      this.initGraph(
+          this.testData,
+          {
+            nodeId: d => d.id,
+            nodeGroup: d => d.group,
+            nodeTitle: d => `${d.id}\n${d.group}`,
+            linkStrokeWidth: l => Math.sqrt(l.value),
+            width: 800,
+            height: 500,
+            // invalidation
+          }
+      )
+    }
 }
 </script>

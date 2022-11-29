@@ -13,7 +13,7 @@ paths:
         - SourceCodePairs
       responses:
         '200':
-          description: A paged array of products
+          description: A paged array of SourceCodePairs
           content:
             application/json:
               schema:
@@ -25,6 +25,28 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
   /codes/{codesId}:
+    get:
+      summary: Get one source_code_pairs
+      operationId: getSourceCodePair
+      parameters:
+        - in: path
+          name: codesId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A SourceCodePair
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SourceCodePair"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
     put:
       summary: Update a source_code_pairs
       operationId: updateSourceCodePairs
@@ -47,6 +69,40 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SourceCodePair"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /code/{codeID}:
+    get:
+      summary: get source code content
+      operationId: getSourceCode
+      parameters:
+        - in: path
+          name: codeID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A paged array of products
+          content:
+            text/plain:
+              schema:
+                type: string
+  /unionfind:
+    get:
+      summary: get unionfind
+      operationId: getUnionFind
+      responses:
+        '200':
+          description: A paged array of products
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnionFind"
 components:
   schemas:
     Confilevel:
@@ -94,6 +150,18 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/SourceCodePair"
+    UnionFind:
+      type: object
+      required:
+        - parent
+        - count
+      properties:
+        parent:
+          type: array
+          items:
+            type: integer
+        count:
+          type: integer
     Error:
       type: object
       required:

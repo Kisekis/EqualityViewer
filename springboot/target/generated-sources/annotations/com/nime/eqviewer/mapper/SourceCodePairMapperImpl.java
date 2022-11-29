@@ -4,12 +4,15 @@ import com.nime.eqviewer.dto.ConfilevelDto;
 import com.nime.eqviewer.dto.ResultTypeDto;
 import com.nime.eqviewer.dto.SourceCodeDto;
 import com.nime.eqviewer.dto.SourceCodePairDto;
+import com.nime.eqviewer.dto.UnionFindDto;
 import com.nime.eqviewer.model.Confilevel;
 import com.nime.eqviewer.model.ResultType;
 import com.nime.eqviewer.model.SourceCode;
 import com.nime.eqviewer.model.SourceCodePair;
+import com.nime.eqviewer.util.UnionFind;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
@@ -87,6 +90,38 @@ public class SourceCodePairMapperImpl implements SourceCodePairMapper {
         sourceCodePairDto.setId( sourceCodePair.id );
 
         return sourceCodePairDto;
+    }
+
+    @Override
+    public UnionFindDto toUnionFindDto(UnionFind uf) {
+        if ( uf == null ) {
+            return null;
+        }
+
+        UnionFindDto unionFindDto = new UnionFindDto();
+
+        unionFindDto.setParent( intArrayToIntegerList( uf.parent ) );
+        unionFindDto.setCount( uf.count );
+
+        return unionFindDto;
+    }
+
+    @Override
+    public UnionFind toUnionFind(UnionFindDto uf) {
+        if ( uf == null ) {
+            return null;
+        }
+
+        int n = 0;
+
+        UnionFind unionFind = new UnionFind( n );
+
+        unionFind.parent = integerListTointArray( uf.getParent() );
+        if ( uf.getCount() != null ) {
+            unionFind.count = uf.getCount();
+        }
+
+        return unionFind;
     }
 
     protected SourceCode sourceCodeDtoToSourceCode(SourceCodeDto sourceCodeDto) {
@@ -198,5 +233,33 @@ public class SourceCodePairMapperImpl implements SourceCodePairMapper {
         }
 
         return confilevelDto;
+    }
+
+    protected List<Integer> intArrayToIntegerList(int[] intArray) {
+        if ( intArray == null ) {
+            return null;
+        }
+
+        List<Integer> list = new ArrayList<Integer>( intArray.length );
+        for ( int int1 : intArray ) {
+            list.add( int1 );
+        }
+
+        return list;
+    }
+
+    protected int[] integerListTointArray(List<Integer> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        int[] intTmp = new int[list.size()];
+        int i = 0;
+        for ( Integer integer : list ) {
+            intTmp[i] = integer;
+            i++;
+        }
+
+        return intTmp;
     }
 }

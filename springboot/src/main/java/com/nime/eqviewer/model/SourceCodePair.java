@@ -12,7 +12,7 @@ public class SourceCodePair {
         this.code1 = code1;
         this.code2 = code2;
         this.result = result;
-        level = result == ResultType.SAME ?Confilevel.RELIABLE :Confilevel.UNRELIABLE;
+        level = result == ResultType.EQUAL ?Confilevel.UNRELIABLE :Confilevel.RELIABLE;
         this.id = id;
     }
 

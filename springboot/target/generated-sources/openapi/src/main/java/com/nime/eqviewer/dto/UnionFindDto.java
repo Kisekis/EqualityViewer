@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import java.util.ArrayList;
+import java.util.List;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
 import javax.validation.Valid;
@@ -15,54 +17,60 @@ import java.util.*;
 import javax.annotation.Generated;
 
 /**
- * SourceCodeDto
+ * UnionFindDto
  */
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-11-29T15:04:32.792220700+08:00[Asia/Hong_Kong]")
-public class SourceCodeDto   {
+public class UnionFindDto   {
 
-  @JsonProperty("path")
-  private String path;
+  @JsonProperty("parent")
+  @Valid
+  private List<Integer> parent = new ArrayList<>();
 
-  @JsonProperty("id")
-  private Integer id;
+  @JsonProperty("count")
+  private Integer count;
 
-  public SourceCodeDto path(String path) {
-    this.path = path;
+  public UnionFindDto parent(List<Integer> parent) {
+    this.parent = parent;
+    return this;
+  }
+
+  public UnionFindDto addParentItem(Integer parentItem) {
+    this.parent.add(parentItem);
     return this;
   }
 
   /**
-   * Get path
-   * @return path
+   * Get parent
+   * @return parent
   */
   @NotNull 
-  @Schema(name = "path", required = true)
-  public String getPath() {
-    return path;
+  @Schema(name = "parent", required = true)
+  public List<Integer> getParent() {
+    return parent;
   }
 
-  public void setPath(String path) {
-    this.path = path;
+  public void setParent(List<Integer> parent) {
+    this.parent = parent;
   }
 
-  public SourceCodeDto id(Integer id) {
-    this.id = id;
+  public UnionFindDto count(Integer count) {
+    this.count = count;
     return this;
   }
 
   /**
-   * Get id
-   * @return id
+   * Get count
+   * @return count
   */
   @NotNull 
-  @Schema(name = "id", required = true)
-  public Integer getId() {
-    return id;
+  @Schema(name = "count", required = true)
+  public Integer getCount() {
+    return count;
   }
 
-  public void setId(Integer id) {
-    this.id = id;
+  public void setCount(Integer count) {
+    this.count = count;
   }
 
   @Override
@@ -73,22 +81,22 @@ public class SourceCodeDto   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    SourceCodeDto sourceCode = (SourceCodeDto) o;
-    return Objects.equals(this.path, sourceCode.path) &&
-        Objects.equals(this.id, sourceCode.id);
+    UnionFindDto unionFind = (UnionFindDto) o;
+    return Objects.equals(this.parent, unionFind.parent) &&
+        Objects.equals(this.count, unionFind.count);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(path, id);
+    return Objects.hash(parent, count);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class SourceCodeDto {\n");
-    sb.append("    path: ").append(toIndentedString(path)).append("\n");
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("class UnionFindDto {\n");
+    sb.append("    parent: ").append(toIndentedString(parent)).append("\n");
+    sb.append("    count: ").append(toIndentedString(count)).append("\n");
     sb.append("}");
     return sb.toString();
   }

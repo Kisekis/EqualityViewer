@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-11-28T15:17:24.572593+08:00[Asia/Hong_Kong]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-11-29T15:04:32.792220700+08:00[Asia/Hong_Kong]")
 @Validated
 @Tag(name = "codes", description = "the codes API")
 public interface CodesApi {
@@ -40,9 +40,46 @@ public interface CodesApi {
     }
 
     /**
+     * GET /codes/{codesId} : Get one source_code_pairs
+     *
+     * @param codesId  (required)
+     * @return A SourceCodePair (status code 200)
+     *         or unexpected error (status code 200)
+     */
+    @Operation(
+        operationId = "getSourceCodePair",
+        summary = "Get one source_code_pairs",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "A SourceCodePair", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  SourceCodePairDto.class))),
+            @ApiResponse(responseCode = "200", description = "unexpected error", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ErrorDto.class)))
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/codes/{codesId}",
+        produces = { "application/json" }
+    )
+    default ResponseEntity<SourceCodePairDto> getSourceCodePair(
+        @Parameter(name = "codesId", description = "", required = true, schema = @Schema(description = "")) @PathVariable("codesId") Integer codesId
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"code2\" : { \"path\" : \"path\", \"id\" : 0 }, \"code1\" : { \"path\" : \"path\", \"id\" : 0 }, \"id\" : 6 }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
      * GET /codes : List all source_code_pairs
      *
-     * @return A paged array of products (status code 200)
+     * @return A paged array of SourceCodePairs (status code 200)
      *         or unexpected error (status code 200)
      */
     @Operation(
@@ -50,7 +87,7 @@ public interface CodesApi {
         summary = "List all source_code_pairs",
         tags = { "SourceCodePairs" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "A paged array of products", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  SourceCodePairDto.class))),
+            @ApiResponse(responseCode = "200", description = "A paged array of SourceCodePairs", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  SourceCodePairDto.class))),
             @ApiResponse(responseCode = "200", description = "unexpected error", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ErrorDto.class)))
         }
     )
@@ -82,12 +119,14 @@ public interface CodesApi {
      * @param codesId  (required)
      * @param sourceCodePairDto A JSON object containing code pair (optional)
      * @return Updated successfully (status code 200)
+     *         or unexpected error (status code 200)
      */
     @Operation(
         operationId = "updateSourceCodePairs",
         summary = "Update a source_code_pairs",
         responses = {
-            @ApiResponse(responseCode = "200", description = "Updated successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  SourceCodePairDto.class)))
+            @ApiResponse(responseCode = "200", description = "Updated successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  SourceCodePairDto.class))),
+            @ApiResponse(responseCode = "200", description = "unexpected error", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ErrorDto.class)))
         }
     )
     @RequestMapping(

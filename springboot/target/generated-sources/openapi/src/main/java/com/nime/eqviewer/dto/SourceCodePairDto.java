@@ -21,7 +21,7 @@ import javax.annotation.Generated;
  * SourceCodePairDto
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-11-28T15:17:24.572593+08:00[Asia/Hong_Kong]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-11-29T15:04:32.792220700+08:00[Asia/Hong_Kong]")
 public class SourceCodePairDto   {
 
   @JsonProperty("code1")

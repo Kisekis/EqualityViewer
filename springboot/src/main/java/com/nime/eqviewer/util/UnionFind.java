@@ -1,19 +1,15 @@
 package com.nime.eqviewer.util;
 
 public class UnionFind {
-    private int[] id;
-    private int count;
+    public int[] parent;
+    public int count;
 
     public UnionFind(int n) {
         count = n;
-        id = new int[n];
+        parent = new int[n];
         for (int i = 0; i < n; i++) {
-            id[i] = i;
+            parent[i] = i;
         }
-    }
-
-    public int count() {
-        return count;
     }
 
     public boolean connected(int p, int q) {
@@ -21,9 +17,7 @@ public class UnionFind {
     }
 
     public int find(int p) {
-        while (p != id[p])
-            p = id[p];
-        return p;
+         return p == parent[p] ? p : (parent[p] = find(parent[p]));
     }
 
     public void union(int p, int q) {
@@ -32,8 +26,7 @@ public class UnionFind {
         }
         int proot = find(p);
         int qroot = find(q);
-        id[proot] = qroot;
-        count--;
+        parent[proot] = qroot;
     }
 
 }

@@ -4,10 +4,16 @@
       <el-col :span="12">
         <h5 class="mb-2"></h5>
         <el-menu
-            default-active="2"
+            router
+            default-active="table"
             class="el-menu-vertical-demo">
-          <el-menu-item index="1-1">可视化</el-menu-item>
-          <el-menu-item index="1-2">判断</el-menu-item>
+          <el-menu-item index="home">首页</el-menu-item>
+          <el-sub-menu index="1-2">
+            <template #title>可视化</template>
+            <el-menu-item index="table">Table view</el-menu-item>
+            <el-menu-item index="graph">Graph view</el-menu-item>
+          </el-sub-menu>
+<!--          <el-menu-item index="1-2"></el-menu-item>-->
         </el-menu>
       </el-col>
     </el-row>

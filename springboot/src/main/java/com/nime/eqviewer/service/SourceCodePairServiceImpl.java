@@ -8,6 +8,12 @@ import com.nime.eqviewer.repository.MemoryRepo;
 import com.nime.eqviewer.util.UnionFind;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,8 +26,7 @@ public class SourceCodePairServiceImpl implements SourceCodePairService{
     }
 
     @Override
-    public void checkSourceCodePairs() {
-
+    public UnionFind checkSourceCodePairs() {
         List<SourceCodePair> data = MemoryRepo.getInstance().getData();
         HashMap<String, SourceCode> map = MemoryRepo.getInstance().getMap();
         UnionFind uf = new UnionFind(map.size());
@@ -33,10 +38,15 @@ public class SourceCodePairServiceImpl implements SourceCodePairService{
         for(SourceCodePair pair : data) {
             if (pair.result == ResultType.INEQUAL) {
                 if (uf.connected(pair.code1.id, pair.code2.id)) {
-                    pair.level = Confilevel.SUSPICIOUS;
+                    for(SourceCodePair pairr : data) {
+                        if(uf.connected(pairr.code1.id, pair.code1.id) && uf.connected(pairr.code2.id, pair.code1.id) && pairr.result == ResultType.EQUAL &&pairr.level != Confilevel.RELIABLE) {
+                            pairr.level = Confilevel.SUSPICIOUS;
+                        }
+                    }
                 }
             }
         }
+        return uf;
     }
 
     @Override
@@ -46,5 +56,17 @@ public class SourceCodePairServiceImpl implements SourceCodePairService{
     @Override
     public void changeLevel(SourceCodePair pair, Confilevel level) {
         pair.level = level;
+    }
+
+    @Override
+    public String getSourceCode(SourceCode code) {
+        String path = code.path;
+        String content = null;
+        try{
+            content = Files.readString(Path.of(path), Charset.defaultCharset());
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return content;
     }
 }

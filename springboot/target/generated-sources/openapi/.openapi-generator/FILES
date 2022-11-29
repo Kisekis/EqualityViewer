@@ -2,9 +2,12 @@
 README.md
 pom.xml
 src/main/java/com/nime/eqviewer/api/ApiUtil.java
+src/main/java/com/nime/eqviewer/api/CodeApi.java
 src/main/java/com/nime/eqviewer/api/CodesApi.java
+src/main/java/com/nime/eqviewer/api/UnionfindApi.java
 src/main/java/com/nime/eqviewer/dto/ConfilevelDto.java
 src/main/java/com/nime/eqviewer/dto/ErrorDto.java
 src/main/java/com/nime/eqviewer/dto/ResultTypeDto.java
 src/main/java/com/nime/eqviewer/dto/SourceCodeDto.java
 src/main/java/com/nime/eqviewer/dto/SourceCodePairDto.java
+src/main/java/com/nime/eqviewer/dto/UnionFindDto.java

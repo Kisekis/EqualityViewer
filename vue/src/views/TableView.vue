@@ -37,9 +37,13 @@
           >
         </template>
       </el-table-column>
+
       <el-table-column label="Operations">
-        <el-button @click="handleChange()">Change result</el-button>
+        <template #default="scope">
+        <el-button @click="handleChange(scope.row)">Change result</el-button>
+        </template>
       </el-table-column>
+
     </el-table>
   </div>
 </template>
@@ -49,12 +53,20 @@
 import { UploadFilled } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import request from "@/utils/request";
+import router from '@/router/index.js'
 
 export default {
   name: 'HomeView',
   components: {UploadFilled},
   data() {
     return {
+      carryCurrentRowCode: {
+        questionTypeId: "",
+        serial: "",
+        questionClassifyId: "",
+        questionContent: "",
+        degreeInitial: ""
+      },
       visible : ref(false),
       tableHeight: 0,
       tableData:[],
@@ -74,13 +86,12 @@ export default {
     }
   },
   created() {
-    this.load()
+    // this.load()
   },
   methods : {
     load() {
       request.get("api/codes").then(
           res=>{
-            console.log(res)
             for (let entry of res) {
               this.tableData.push(
                   {
@@ -97,8 +108,16 @@ export default {
           }
       );
     },
-    handleChange() {
-
+    handleChange(row) {
+      // const router = useRouter()
+      let currentID = row.id;
+      const routers = router.push({
+        path: "/editor",
+        query: {
+          currentID
+        }
+      });
+      // window.open(routers.href, '_blank');
     },
     filterResult(value,row) {
       return row.result === value
@@ -112,11 +131,16 @@ export default {
         case 'SAME':
           return 'success';
       }
-    }
+    },
+      getUnionfind() {
+        request.get("api/unionfind")
+      }
   },
-    mounted() {
+  mounted() {
       this.tableHeight = window.innerHeight - 115;
-    }
+      this.getUnionfind()
+      this.load()
+    },
 }
 </script>
 <style>

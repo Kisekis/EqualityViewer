@@ -1,132 +1,117 @@
 <template>
-  <div style="padding: 10px">
-    <!--    功能区域-->
-    <div style="display: flex">
-      <el-upload
-          class="upload-demo"
-          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-          style="margin-right: 10px"
-      >
-        <el-button type="primary">Upload</el-button>
-      </el-upload>
-      <el-button type="primary">Download</el-button>
+  <div style="padding: 10px" >
+    <div style="margin: 0 0 10px">
+      <!--      Please select a new result! :-->
+      <el-button type="primary" plain @click="handleClick('EQUAL')">Equal</el-button>
+      <el-button type="danger" plain @click="handleClick('INEQUAL')">Inequal</el-button>
     </div>
-    <el-table :data="tableData" border style="width: 100%" :max-height="tableHeight" :row-class-name="tableRowClassName">
-      <el-table-column prop="id" label="ID" width="80" sortable/>
-      <el-table-column prop="id1" label="ID1" width="50"/>
-      <el-table-column prop="code1" label="Code1" width="290"/>
-      <el-table-column prop="id2" label="ID2" width="50"/>
-      <el-table-column prop="code2" label="Code2" width="290" />
-      <el-table-column
-          prop="result"
-          label="Result"
-          width="155"
-          :filters="[
-            { text: 'EQUAL', value: 'EQUAL' },
-            { text: 'INEQUAL', value: 'INEQUAL' },
-            { text: 'SAME', value: 'SAME' },
-          ]"
-          :filter-method="filterResult"
-          filter-placement="bottom-end">
-        <template #default="scope">
-          <el-tag
-              :type="getType(scope.row.result)"
-              disable-transitions
-              style="width: 130px"
-          >{{ scope.row.result }}</el-tag
-          >
-        </template>
-      </el-table-column>
-      <el-table-column label="Operations">
-        <el-button @click="handleChange()">Change result</el-button>
-      </el-table-column>
+    <el-table :data="tableData" border stripe style="width: 100%" :max-height="tableHeight">
+      <el-table-column prop="code1" label="Code1" style="width: 50%"/>
+      <el-table-column prop="code2" label="Code2" style="width: 50%"/>
     </el-table>
+    <div id="code-diff-box">
+    </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import { UploadFilled } from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import CodeMirror from 'codemirror'
+import DiffMatchPatch from 'diff-match-patch';
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/addon/merge/merge.js'
+import 'codemirror/addon/merge/merge.css'
+import { useRoute } from 'vue-router'
 import request from "@/utils/request";
-
+import router from '@/router/index.js'
+window.diff_match_patch = DiffMatchPatch
+window.DIFF_DELETE = -1
+window.DIFF_INSERT = 1
+window.DIFF_EQUAL = 0
 export default {
-  name: 'HomeView',
-  components: {UploadFilled},
+  name: 'EditorView',
+  components: {
+  },
   data() {
     return {
-      visible : ref(false),
+      carryID: 0,
+      carryCurrentRowCode: {},
       tableHeight: 0,
-      tableData:[],
-      search:'',
-      currentPage:1,
-      total:10,
-      tableRowClassName: ({row,rowIndex}) => {
-        switch(row.level) {
-          case "UNRELIABLE":
-            return 'warning-row'
-          case "RELIABLE":
-            return 'success-row'
-          case "SUSPICIOUS":
-            return 'danger-row'
-        }
-      }
+      tableData:[
+      ],
+      content1: '',
+      content2: 'this is a sample code \n implements code difference'
     }
-  },
-  created() {
-    this.load()
-  },
-  methods : {
-    load() {
-      request.get("api/codes").then(
-          res=>{
-            console.log(res)
-            for (let entry of res) {
-              this.tableData.push(
-                  {
-                    id: entry.id,
-                    id1: entry.code1.id,
-                    id2: entry.code2.id,
-                    code1: entry.code1.path,
-                    code2: entry.code2.path,
-                    result: entry.result,
-                    level: entry.level
-                  }
-              );
-            }
+  },methods : {
+    handleClick(str) {
+      this.tableData[0].result = str
+      let obj = {
+        code1: {
+          path: this.tableData[0].code1,
+          id: this.tableData[0].id1
+        },
+        code2: {
+          path: this.tableData[0].code2,
+          id: this.tableData[0].id2
+        },
+        result: str,
+        level: "RELIABLE",
+        id: this.tableData[0].id
+      }
+      request.put("api/codes/"+this.tableData[0].id,obj)
+      const routers = router.push({
+        path: "/table",
+      });
+    },
+    load(carryID) {
+      request.get("api/codes/"+carryID).then(
+          entry=>{
+            this.tableData.push(
+                {
+                  id: entry.id,
+                  id1: entry.code1.id,
+                  id2: entry.code2.id,
+                  code1: entry.code1.path,
+                  code2: entry.code2.path,
+                  result: entry.result,
+                  level: entry.level
+                }
+            );
           }
       );
     },
-    handleChange() {
-
-    },
-    filterResult(value,row) {
-      return row.result === value
+    diffCode(){
+      let target = document.getElementById("code-diff-box");
+      target.innerHTML = "";
+      CodeMirror.MergeView(target, {
+        value:this.content1,
+        origRight: null,
+        orig:this.content2,
+        lineNumbers: true,
+        mode: "text/html",
+        highlightDifferences: true,
+        // connect: 'align',
+        readOnly: false,
+      });
     },
     getType(str) {
       switch (str) {
-        case 'EQUAL':
+        case 'Equal':
           return '';
-        case 'INEQUAL':
+        case 'Inequal':
           return 'danger';
-        case 'SAME':
+        case 'Same':
           return 'success';
       }
     }
   },
     mounted() {
       this.tableHeight = window.innerHeight - 115;
-    }
+      this.diffCode()
+    },
+  created() {
+    const route = useRoute()
+    this.load(route.query.currentID)
+  }
 }
 </script>
-<style>
-.el-table .warning-row {
-  --el-table-tr-bg-color: var(--el-color-warning-light-9);
-}
-.el-table .success-row {
-  --el-table-tr-bg-color: var(--el-color-success-light-9);
-}
-.el-table .danger-row {
-  --el-table-tr-bg-color: var(--el-color-danger-light-9);
-}
-</style>

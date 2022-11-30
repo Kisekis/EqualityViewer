@@ -103,6 +103,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UnionFind"
+  /write:
+    get:
+      summary: Write all source_code_pairs
+      operationId: writeSourceCodePairs
+      responses:
+        '200':
+          description: A paged array of SourceCodePairs
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     Confilevel:

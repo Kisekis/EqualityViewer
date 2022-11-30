@@ -1,21 +1,13 @@
 <template>
   <div style="padding: 10px">
-    <!--    功能区域-->
-<!--    <div style="display: flex">-->
-<!--      <el-upload-->
-<!--          class="upload-demo"-->
-<!--          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"-->
-<!--          style="margin-right: 10px"-->
-<!--      >-->
-<!--        <el-button type="primary">Upload</el-button>-->
-<!--      </el-upload>-->
-<!--      <el-button type="primary">Download</el-button>-->
-<!--    </div>-->
+    <div style="display: flex">
+      <el-button type="primary" style="margin-bottom: 10px" @click="handleWrite()">Write</el-button>
+    </div>
     <el-table :data="tableData" border style="width: 100%" :max-height="tableHeight" :row-class-name="tableRowClassName">
       <el-table-column prop="id" label="ID" width="80" sortable/>
-      <el-table-column prop="id1" label="ID1" width="50"/>
+      <el-table-column prop="id1" label="ID1" width="50" sortable/>
       <el-table-column prop="code1" label="Code1" width="290"/>
-      <el-table-column prop="id2" label="ID2" width="50"/>
+      <el-table-column prop="id2" label="ID2" width="50" sortable/>
       <el-table-column prop="code2" label="Code2" width="290" />
       <el-table-column
           prop="result"
@@ -107,6 +99,11 @@ export default {
             }
           }
       );
+    },
+    handleWrite() {
+      request.get("api/write").then(res => {
+        alert("Success")
+      })
     },
     handleChange(row) {
       // const router = useRouter()

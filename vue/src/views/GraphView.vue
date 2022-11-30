@@ -17,55 +17,103 @@ export default {
   },
   data() {
     return {
-      graphData : [],
+      unionFind: [],
+      graphData : {
+        nodes:[],
+        links:[]
+      },
       testData: {
         nodes : [
-          {id: "test1",
+          {id: "1",
           group: 1},
-          {id: "test2",
+          {id: "2",
+            group: 3},
+          {id: "3",
             group: 2},
-          {id: "test1",
+          {id: "4",
             group: 1},
-          {id: "test2",
+          {id: "5",
             group: 2},
-          {id: "test1",
+          {id: "6",
             group: 1},
-          {id: "test2",
+          {id: "7",
             group: 2},
-          {id: "test1",
+          {id: "8",
             group: 1},
-          {id: "test2",
-            group: 2}
+          {id: "9",
+            group: 2},
+          {id: "10",
+            group: 11}
         ],
         links : [
-          // {
-          //   source: "test1",
-          //   target: "test2",
-          //   value: 2
-          // }
+          {
+            source: "1",
+            target: "3",
+            value: 10
+          }
         ]
       },
     }
   },methods : {
     load() {
+      let nodeSet = new Set()
+      let graphData = {
+        nodes:[],
+        links:[]
+      }
       request.get("api/codes").then(
-          res => {
-            console.log(res)
-            for (let entry of res) {
-              this.graphData.push(
-                  {
-                    id: entry.id,
-                    id1: entry.code1.id,
-                    id2: entry.code2.id,
-                    code1: entry.code1.path,
-                    code2: entry.code2.path,
-                    result: entry.result,
-                    level: entry.level
+          res1 => {
+            request.get("api/unionfind")
+                .then(res2 => {
+                      this.unionFind = res2.parent
+                  for (let entry of res1) {
+                    if(!nodeSet.has(entry.code1.id)) {
+                      nodeSet.add(entry.code1.id)
+                      graphData.nodes.push(
+                          {
+                            id : entry.code1.id+"",
+                            group: this.unionFind[entry.code1.id]
+                          }
+                      )
+                    }
+                    if(!nodeSet.has(entry.code2.id)) {
+                      nodeSet.add(entry.code2.id)
+                      graphData.nodes.push(
+                          {
+                            id : entry.code2.id+"",
+                            group: this.unionFind[entry.code2.id]
+                          }
+                      )
+                    }
+                    if(entry.result === 'EQUAL' || entry.result === 'SAME')
+                      graphData.links.push(
+                          {
+                            source: entry.code1.id+"",
+                            target: entry.code2.id+"",
+                            value: 10
+                          }
+                      );
                   }
-              );
-            }
+                  this.graphData = graphData
+                  this.initGraph(
+                      this.graphData,
+                      {
+                        nodeId: d => d.id,
+                        nodeGroup: d => d.group,
+                        nodeTitle: d => `${d.id}\n${d.group}`,
+                        linkStrokeWidth: l => Math.sqrt(l.value),
+                        width: 1300,
+                        height: 660,
+                        // invalidation
+                      }
+                  )
+                    }
+                );
+
+
           }
       );
+      return graphData
     },
     initGraph({
                 nodes, // an iterable of node objects (typically [{id}, …])
@@ -79,7 +127,7 @@ export default {
                 nodeStroke = "#fff", // node stroke color
                 nodeStrokeWidth = 1.5, // node stroke width, in pixels
                 nodeStrokeOpacity = 1, // node stroke opacity
-                nodeRadius = 5, // node radius, in pixels
+                nodeRadius = 15, // node radius, in pixels
                 nodeStrength,
                 linkSource = ({source}) => source, // given d in links, returns a node identifier string
                 linkTarget = ({target}) => target, // given d in links, returns a node identifier string
@@ -120,9 +168,10 @@ export default {
       if (linkStrength !== undefined) forceLink.strength(linkStrength);
 
       const simulation = d3.forceSimulation(nodes)
-          .force("link", forceLink)
+          .force("link", forceLink.distance([150]))
           .force("charge", forceNode)
           .force("center",  d3.forceCenter())
+          .force("collision", d3.forceCollide().radius(d=>d.radius))
           .on("tick", ticked);
 
       const svg = d3.select(".container")
@@ -131,6 +180,8 @@ export default {
           .attr("height", height)
           .attr("viewBox", [-width / 2, -height / 2, width, height])
           .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
+
+
 
       const link = svg.append("g")
           .attr("stroke", typeof linkStroke !== "function" ? linkStroke : null)
@@ -152,6 +203,13 @@ export default {
           .attr("r", nodeRadius)
           .call(drag(simulation));
 
+      const text = svg.append("g")
+          .attr("class", "text")
+          .selectAll("text")
+          .data(nodes)
+          .enter().append("text")
+          .text(d => d.id)
+
       if (W) link.attr("stroke-width", ({index: i}) => W[i]);
       if (L) link.attr("stroke", ({index: i}) => L[i]);
       if (G) node.attr("fill", ({index: i}) => color(G[i]));
@@ -172,6 +230,8 @@ export default {
         node
             .attr("cx", d => d.x)
             .attr("cy", d => d.y);
+        text.attr("x", d => d.x - 5)
+            .attr("y", d => d.y + 5);
       }
 
       function drag(simulation) {
@@ -199,21 +259,9 @@ export default {
       }
     }
   },created() {
-      this.load()
-    },
+    this.load()
+  },
     mounted() {
-      this.initGraph(
-          this.testData,
-          {
-            nodeId: d => d.id,
-            nodeGroup: d => d.group,
-            nodeTitle: d => `${d.id}\n${d.group}`,
-            linkStrokeWidth: l => Math.sqrt(l.value),
-            width: 800,
-            height: 500,
-            // invalidation
-          }
-      )
     }
 }
 </script>

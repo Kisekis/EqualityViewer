@@ -77,6 +77,9 @@ export default {
                   level: entry.level
                 }
             );
+            request.get("api/code/"+entry.code1.id).then(res=>{this.content1 = res;this.diffCode()})
+            request.get("api/code/"+entry.code2.id).then(res=>{this.content2 = res;this.diffCode()})
+
           }
       );
     },
@@ -107,7 +110,7 @@ export default {
   },
     mounted() {
       this.tableHeight = window.innerHeight - 115;
-      this.diffCode()
+
     },
   created() {
     const route = useRoute()

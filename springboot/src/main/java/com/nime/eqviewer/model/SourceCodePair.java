@@ -18,6 +18,6 @@ public class SourceCodePair {
 
     @Override
     public String toString() {
-        return code1+","+code2+",\n";
+        return code1.path+","+code2.path+",\n";
     }
 }

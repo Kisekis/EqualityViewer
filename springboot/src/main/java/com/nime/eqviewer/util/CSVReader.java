@@ -19,7 +19,7 @@ public class CSVReader {
     private static int globalId = 0;
     private static int globalPairId = 0;
     public CSVReader(String path) {
-        this.folderPath = path;
+        this.folderPath = path + "/input/csv/";
         data = new ArrayList<>();
         map = new HashMap<>();
     }

@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ResourceBundle;
 
 
 @Service
@@ -61,9 +62,10 @@ public class SourceCodePairServiceImpl implements SourceCodePairService{
     @Override
     public String getSourceCode(SourceCode code) {
         String path = code.path;
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("application");
         String content = null;
         try{
-            content = Files.readString(Path.of(path), Charset.defaultCharset());
+            content = Files.readString(Path.of(resourceBundle.getString("path")+"/"+path), Charset.defaultCharset());
         }catch (Exception e) {
             e.printStackTrace();
         }

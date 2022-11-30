@@ -2,6 +2,7 @@ com\nime\eqviewer\api\ApiUtil.class
 com\nime\eqviewer\dto\ResultTypeDto.class
 com\nime\eqviewer\util\UnionFind.class
 com\nime\eqviewer\dto\SourceCodeDto.class
+com\nime\eqviewer\api\WriteApi.class
 com\nime\eqviewer\api\CodesApi.class
 com\nime\eqviewer\util\CSVWriter$1.class
 com\nime\eqviewer\mapper\SourceCodePairMapper.class

@@ -3,6 +3,7 @@ package com.nime.eqviewer.rest;
 import com.nime.eqviewer.api.CodeApi;
 import com.nime.eqviewer.api.CodesApi;
 import com.nime.eqviewer.api.UnionfindApi;
+import com.nime.eqviewer.api.WriteApi;
 import com.nime.eqviewer.dto.SourceCodePairDto;
 import com.nime.eqviewer.dto.UnionFindDto;
 import com.nime.eqviewer.mapper.SourceCodePairMapper;
@@ -10,10 +11,9 @@ import com.nime.eqviewer.model.SourceCode;
 import com.nime.eqviewer.model.SourceCodePair;
 import com.nime.eqviewer.repository.MemoryRepo;
 import com.nime.eqviewer.service.SourceCodePairService;
+import com.nime.eqviewer.util.CSVWriter;
 import com.nime.eqviewer.util.UnionFind;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
-import org.springframework.context.annotation.Bean;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,12 +26,14 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 @RestController
 @RequestMapping("/api")
-public class SourceCodePairController implements  CodesApi, CodeApi, UnionfindApi {
+public class SourceCodePairController implements  CodesApi, CodeApi, UnionfindApi, WriteApi {
     private final SourceCodePairMapper sourceCodePairMapper;
     private final SourceCodePairService sourceCodePairService;
+
 
     public SourceCodePairController(SourceCodePairMapper sourceCodePairMapper, SourceCodePairService sourceCodePairService) {
         this.sourceCodePairMapper = sourceCodePairMapper;
@@ -101,6 +103,18 @@ public class SourceCodePairController implements  CodesApi, CodeApi, UnionfindAp
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(ret, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> writeSourceCodePairs() {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("application");
+        CSVWriter writer = new CSVWriter(resourceBundle.getString("path"));
+        try{
+            writer.write(this.sourceCodePairService.sourceCodePairs());
+        }catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     @Override
     public Optional<NativeWebRequest> getRequest() {

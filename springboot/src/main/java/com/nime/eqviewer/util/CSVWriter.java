@@ -9,13 +9,16 @@ import java.util.List;
 public class CSVWriter {
     private String folderPath = "./";
     public CSVWriter(String outputPath) {
-        this.folderPath = outputPath;
+        this.folderPath = outputPath + "/output/";
     }
     public void write(List<SourceCodePair> data) {
         try {
-            FileWriter sameWriter = new FileWriter(folderPath + "same");
-            FileWriter equalWriter = new FileWriter(folderPath + "equal");
-            FileWriter inequalWriter = new FileWriter(folderPath + "inequal");
+            FileWriter sameWriter = new FileWriter(folderPath + "same.csv");
+            FileWriter equalWriter = new FileWriter(folderPath + "equal.csv");
+            FileWriter inequalWriter = new FileWriter(folderPath + "inequal.csv");
+            sameWriter.write("file1,file2,\n");
+            equalWriter.write("file1,file2,\n");
+            inequalWriter.write("file1,file2,\n");
             for(SourceCodePair s : data) {
                 switch (s.result) {
                     case SAME:

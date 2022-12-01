@@ -1,14 +1,22 @@
+[TOC]
+
+
+
 ## 简介
 
-本项目实现了Vue+Springboot前后端项目
+本项目实现了Vue+Springboot前后端EqualityViewer项目,用于接受等价判断工具产生的csv文件，提供给用户交互选项进行判断。
 
 ## git操作
 
 本项目全程使用git管理。
 
-<img src="Ex5.assets/image-20221201103741758.png" alt="image-20221201103741758" style="zoom:50%;" />
+![image-20221201211758871](Ex5.assets/image-20221201211758871.png)
 
 首先在master分支上创建两个初始项目，接着创建两个分支vue和springboot，分别在两个分支上进行开发，最后合并分支进行开发。
+
+项目已发布至[Kisekis/EqualityViewer (github.com)](https://github.com/Kisekis/EqualityViewer)
+
+关于git操作的详细部分，可以在Ex4的实验报告里找到，不想再赘述（
 
 ## 功能介绍
 
@@ -38,6 +46,7 @@ springboot实现后端部分，为MVC架构
     * Equal : 相等
     * Inequal : 不相等
     * Same : 相同
+    * Uncertain : 不确认
 
   * [enum] ConfiLevel : 可信程度
 
@@ -87,7 +96,7 @@ springboot实现后端部分，为MVC架构
 
   此外还有Repository层用于存储数据，包含在repository文件夹中
 
-  * MemoryRepo : 直接存储在本地里，采用单例模式
+  * MemoryRepo : 直接将数据存储在本地里，采用单例模式
     * getInstance() : 获取MemoryRepo唯一对象
     * getData() : 获取所有SourceCodePair，
     * getMap() : 获取所有SourceCode，用Map存储
@@ -96,9 +105,9 @@ springboot实现后端部分，为MVC架构
 
   util文件夹中用于实现业务功能，包括
 
-  * CSVreader : 
-  * CSVwriter : 
-  * UnionFind : 
+  * CSVreader : 读取csv文件的类
+  * CSVwriter : 写入csv文件的类
+  * UnionFind : 并查集，用于进行逻辑判断
 
 此外除了springboot以外，程序使用了一些其他maven依赖
 
@@ -133,10 +142,10 @@ vue实现前端，结合Element-plus小组件
 
 **视图（View）**：
 
-* HomeView : 主页，只是用来介绍软件的
-* TableView : 表格视图，会将读取的csv文件以表格形式展示出来，并在表格的每列提供一个el-button按钮，触发后跳转到EditorView进行判断
-* GraphView : 图视图，会将读取的csv文件以图的形式展示出来
-* EditorView : 编辑视图，会将正在判断的两个源文件内容展示出来，并提供两个el-button，EQUAL和INEQUAL，触发后更改当前判断的源文件对等价性结果，并跳转回TableView
+* HomeView : 主页，只是用来占位置的
+* TableView : 表格视图，会将读取的csv文件以**表格形式**展示出来，并在表格的每列提供一个el-button按钮，触发后跳转到EditorView进行判断
+* GraphView : 图视图，会将读取的csv文件以**图**的形式展示出来
+* EditorView : 编辑视图，会将正在判断的两个**源文件内容**展示出来，并提供两个el-button，EQUAL和INEQUAL，触发后更改当前判断的源文件对等价性结果，并跳转回TableView
 
 **路由（route）**：
 
@@ -388,11 +397,21 @@ mvn compile
 mvn spring-boot:run
 ```
 
-> 如果路径有误可以修改resources文件夹下的application.properties,里面的path指向data文件夹
+> 如果路径有误可以修改resources文件夹下的application.properties，里面的path配置
+>
+> 在Ubuntu系统上测试需要去掉/springboot变为./src/main/resources/data
 
 ### 运行
 
 运行过程已录制视频发布至bilibili。
+
+[软件工程实验五_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1H24y1k7Pb/)
+
+程序开在了我的服务器上，可以在此测试（如果还在的话）
+
+[eqviewer-vue (nime.love)](http://nime.love/home) 前端
+
+[eqviewer-springboot(nime.love)](http://nime.love:9090/api/codes) 后端接口
 
 * 将输入放置在resources/data文件夹中
 
@@ -412,9 +431,9 @@ mvn spring-boot:run
   	-output //初始为空
   ```
 
-* 启动Springboot和Vue项目
+* 启动Springboot和Vue项目，浏览器访问localhost（默认80端口）
 
-* 浏览器访问localhost（默认80端口）
+* 不断点击Next直到所有条目变成Reliable（可信的，绿色底纹）
 
 * 结束后点击Write，写入到data/output中
 

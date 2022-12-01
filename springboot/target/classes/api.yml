@@ -130,6 +130,7 @@ components:
         - SAME
         - EQUAL
         - INEQUAL
+        - UNCERTAIN
     SourceCode:
       type: object
       required:

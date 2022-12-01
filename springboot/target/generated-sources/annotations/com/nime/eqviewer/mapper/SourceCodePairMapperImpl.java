@@ -156,6 +156,8 @@ public class SourceCodePairMapperImpl implements SourceCodePairMapper {
             break;
             case INEQUAL: resultType = ResultType.INEQUAL;
             break;
+            case UNCERTAIN: resultType = ResultType.UNCERTAIN;
+            break;
             default: throw new IllegalArgumentException( "Unexpected enum constant: " + resultTypeDto );
         }
 
@@ -208,6 +210,8 @@ public class SourceCodePairMapperImpl implements SourceCodePairMapper {
             case EQUAL: resultTypeDto = ResultTypeDto.EQUAL;
             break;
             case INEQUAL: resultTypeDto = ResultTypeDto.INEQUAL;
+            break;
+            case UNCERTAIN: resultTypeDto = ResultTypeDto.UNCERTAIN;
             break;
             default: throw new IllegalArgumentException( "Unexpected enum constant: " + resultType );
         }

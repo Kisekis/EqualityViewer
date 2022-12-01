@@ -1,5 +1,5 @@
 <template>
-This is a home page, which is working in progress.
+等价确认工具的实现，详细介绍请访问 <a href="https://github.com/Kisekis/EqualityViewer"> Github Page</a>
 </template>
 
 <script>

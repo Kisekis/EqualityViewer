@@ -4,6 +4,7 @@
       <!--      Please select a new result! :-->
       <el-button type="primary" plain @click="handleClick('EQUAL')">Equal</el-button>
       <el-button type="danger" plain @click="handleClick('INEQUAL')">Inequal</el-button>
+      <el-button type="info" plain @click="handleClick('UNCERTAIN')">Uncertain</el-button>
     </div>
     <el-table :data="tableData" border stripe style="width: 100%" :max-height="tableHeight">
       <el-table-column prop="code1" label="Code1" style="width: 50%"/>
@@ -21,9 +22,11 @@ import DiffMatchPatch from 'diff-match-patch';
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/merge/merge.js'
 import 'codemirror/addon/merge/merge.css'
+import 'codemirror/mode/clike/clike'
 import { useRoute } from 'vue-router'
 import request from "@/utils/request";
 import router from '@/router/index.js'
+
 window.diff_match_patch = DiffMatchPatch
 window.DIFF_DELETE = -1
 window.DIFF_INSERT = 1
@@ -91,7 +94,7 @@ export default {
         origRight: null,
         orig:this.content2,
         lineNumbers: true,
-        mode: "text/html",
+        mode: "text/x-c++src",
         highlightDifferences: true,
         // connect: 'align',
         readOnly: false,
@@ -105,6 +108,7 @@ export default {
           return 'danger';
         case 'Same':
           return 'success';
+
       }
     }
   },

@@ -103,7 +103,7 @@ export default {
                         nodeTitle: d => `${d.id}\n${d.group}`,
                         linkStrokeWidth: l => Math.sqrt(l.value),
                         width: 1300,
-                        height: 660,
+                        height: 650,
                         // invalidation
                       }
                   )
@@ -138,7 +138,7 @@ export default {
                 linkStrength,
                 colors = d3.schemeTableau10, // an array of color strings, for the node groups
                 width = 640, // outer width, in pixels
-                height = 400, // outer height, in pixels
+                height = 360, // outer height, in pixels
                 // invalidation // when this promise resolves, stop the simulation
               } = {})
     {

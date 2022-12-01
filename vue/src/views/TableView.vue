@@ -2,13 +2,14 @@
   <div style="padding: 10px">
     <div style="display: flex">
       <el-button type="primary" style="margin-bottom: 10px" @click="handleWrite()">Write</el-button>
+      <el-button type="primary" style="margin-bottom: 10px" @click="handleNext()">Next</el-button>
     </div>
     <el-table :data="tableData" border style="width: 100%" :max-height="tableHeight" :row-class-name="tableRowClassName">
       <el-table-column prop="id" label="ID" width="80" sortable/>
-      <el-table-column prop="id1" label="ID1" width="50" sortable/>
-      <el-table-column prop="code1" label="Code1" width="290"/>
-      <el-table-column prop="id2" label="ID2" width="50" sortable/>
-      <el-table-column prop="code2" label="Code2" width="290" />
+      <el-table-column prop="id1" label="ID1" width="75" sortable/>
+      <el-table-column prop="code1" label="Code1" width="255"/>
+      <el-table-column prop="id2" label="ID2" width="75" sortable/>
+      <el-table-column prop="code2" label="Code2" width="255" />
       <el-table-column
           prop="result"
           label="Result"
@@ -17,6 +18,7 @@
             { text: 'EQUAL', value: 'EQUAL' },
             { text: 'INEQUAL', value: 'INEQUAL' },
             { text: 'SAME', value: 'SAME' },
+            { text: 'UNCERTAIN', value: 'UNCERTAIN' },
           ]"
           :filter-method="filterResult"
           filter-placement="bottom-end">
@@ -105,6 +107,33 @@ export default {
         alert("Success")
       })
     },
+    handleNext() {
+      for(let entry of this.tableData) {
+        if(entry.level === "SUSPICIOUS") {
+          let currentID = entry.id
+          const routers = router.push({
+            path: "/editor",
+            query: {
+              currentID
+            }
+          });
+          return;
+        }
+      }
+      for(let entry of this.tableData) {
+        if(entry.level === "UNRELIABLE") {
+          let currentID = entry.id
+          const routers = router.push({
+            path: "/editor",
+            query: {
+              currentID
+            }
+          });
+          return;
+        }
+      }
+      alert("Already finished")
+    },
     handleChange(row) {
       // const router = useRouter()
       let currentID = row.id;
@@ -127,6 +156,8 @@ export default {
           return 'danger';
         case 'SAME':
           return 'success';
+        case 'UNCERTAIN':
+          return 'info';
       }
     },
       getUnionfind() {

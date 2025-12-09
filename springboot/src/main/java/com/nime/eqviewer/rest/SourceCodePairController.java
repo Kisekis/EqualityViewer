@@ -10,6 +10,7 @@ import com.nime.eqviewer.mapper.SourceCodePairMapper;
 import com.nime.eqviewer.model.SourceCode;
 import com.nime.eqviewer.model.SourceCodePair;
 import com.nime.eqviewer.repository.MemoryRepo;
+import com.nime.eqviewer.security.InputValidator;
 import com.nime.eqviewer.service.SourceCodePairService;
 import com.nime.eqviewer.util.CSVWriter;
 import com.nime.eqviewer.util.UnionFind;
@@ -58,6 +59,16 @@ public class SourceCodePairController implements  CodesApi, CodeApi, UnionfindAp
 
     @Override
     public ResponseEntity<SourceCodePairDto> updateSourceCodePairs(@PathVariable("codesId") Integer codesId, @RequestBody SourceCodePairDto sourceCodePairDto) {
+        // Validate input ID
+        if (!InputValidator.isValidId(codesId)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        
+        // Validate DTO content
+        if (sourceCodePairDto == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        
         List<SourceCodePair> data = this.sourceCodePairService.sourceCodePairs();
         SourceCodePairDto ret = null;
         for(SourceCodePair pair : data) {
@@ -78,12 +89,26 @@ public class SourceCodePairController implements  CodesApi, CodeApi, UnionfindAp
 
     @Override
     public ResponseEntity<String> getSourceCode(Integer codeID) {
-        String ret = null;
-        for(SourceCode s : MemoryRepo.getInstance().getMap().values()) {
-            if(s.id == codeID) {
-                ret = sourceCodePairService.getSourceCode(s);
-            }
+        // Validate input ID
+        if (!InputValidator.isValidId(codeID)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        
+        String ret = null;
+        try {
+            for(SourceCode s : MemoryRepo.getInstance().getMap().values()) {
+                if(s.id == codeID) {
+                    ret = sourceCodePairService.getSourceCode(s);
+                }
+            }
+        } catch (SecurityException e) {
+            // Return forbidden for security violations
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } catch (Exception e) {
+            // Return internal server error for other exceptions
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
         if(ret == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -91,6 +116,11 @@ public class SourceCodePairController implements  CodesApi, CodeApi, UnionfindAp
     }
     @Override
     public ResponseEntity<SourceCodePairDto> getSourceCodePair(@PathVariable("codesId") Integer codesId) {
+        // Validate input ID
+        if (!InputValidator.isValidId(codesId)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        
         List<SourceCodePair> data = this.sourceCodePairService.sourceCodePairs();
         SourceCodePairDto ret = null;
         for(SourceCodePair pair : data) {

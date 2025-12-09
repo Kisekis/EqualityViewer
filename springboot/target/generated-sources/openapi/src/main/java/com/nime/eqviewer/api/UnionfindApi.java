@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-12-01T19:49:50.875269600+08:00[Asia/Hong_Kong]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-09T02:12:14.118931611Z[Etc/UTC]")
 @Validated
 @Tag(name = "unionfind", description = "the unionfind API")
 public interface UnionfindApi {

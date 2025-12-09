@@ -31,7 +31,13 @@ public class SecurityConfig implements WebMvcConfigurer {
         CorsConfiguration config = new CorsConfiguration();
         
         // Allow specific origins (adjust based on your frontend URL)
-        config.setAllowedOriginPatterns(Arrays.asList("http://localhost*", "http://127.0.0.1*"));
+        // Frontend runs on port 80, backend on 9090
+        config.setAllowedOriginPatterns(Arrays.asList(
+            "http://localhost:80", 
+            "http://localhost", 
+            "http://127.0.0.1:80",
+            "http://127.0.0.1"
+        ));
         
         // Allow specific HTTP methods
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));

@@ -43,7 +43,12 @@ public class SecurityConfig implements WebMvcConfigurer {
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         
         // Allow specific headers
-        config.setAllowedHeaders(Arrays.asList("*"));
+        config.setAllowedHeaders(Arrays.asList(
+            "Content-Type",
+            "Accept",
+            "Origin",
+            "X-Requested-With"
+        ));
         
         // Allow credentials
         config.setAllowCredentials(true);
@@ -75,8 +80,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                 // Prevent MIME type sniffing
                 httpResponse.setHeader("X-Content-Type-Options", "nosniff");
                 
-                // Enable XSS protection
-                httpResponse.setHeader("X-XSS-Protection", "1; mode=block");
+                // XSS protection is handled by Content-Security-Policy (deprecated header removed)
                 
                 // Enforce HTTPS (in production)
                 // Uncomment in production with HTTPS enabled

@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 public class InputValidator {
     
     // Pattern to allow only safe file paths (alphanumeric, dots, slashes, underscores, hyphens)
+    // Note: consecutive dots are blocked separately in isValidPath()
     private static final Pattern SAFE_PATH_PATTERN = Pattern.compile("^[a-zA-Z0-9/_.-]+$");
     
     // Maximum file size to read (10 MB)
@@ -37,6 +38,11 @@ public class InputValidator {
         
         // Check for path traversal attempts
         if (filePath.contains("..") || filePath.contains("~")) {
+            return false;
+        }
+        
+        // Additional check: ensure no consecutive dots anywhere in path
+        if (filePath.matches(".*\\.{2,}.*")) {
             return false;
         }
         

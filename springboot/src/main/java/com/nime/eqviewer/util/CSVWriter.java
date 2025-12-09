@@ -1,6 +1,7 @@
 package com.nime.eqviewer.util;
 
 import com.nime.eqviewer.model.SourceCodePair;
+import com.nime.eqviewer.security.InputValidator;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,18 +23,20 @@ public class CSVWriter {
             inequalWriter.write("file1,file2,\n");
             uncertainWriter.write("file1,file2,\n");
             for(SourceCodePair s : data) {
+                // Sanitize the CSV content to prevent CSV injection
+                String sanitizedOutput = sanitizeForCsv(s);
                 switch (s.result) {
                     case SAME:
-                        sameWriter.write(s.toString());
+                        sameWriter.write(sanitizedOutput);
                         break;
                     case EQUAL:
-                        equalWriter.write(s.toString());
+                        equalWriter.write(sanitizedOutput);
                         break;
                     case INEQUAL:
-                        inequalWriter.write(s.toString());
+                        inequalWriter.write(sanitizedOutput);
                         break;
                     case UNCERTAIN:
-                        uncertainWriter.write(s.toString());
+                        uncertainWriter.write(sanitizedOutput);
                         break;
                 }
             }
@@ -45,6 +48,15 @@ public class CSVWriter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Sanitize SourceCodePair data for CSV output to prevent CSV injection
+     */
+    private String sanitizeForCsv(SourceCodePair pair) {
+        String path1 = InputValidator.sanitizeCsvContent(pair.code1.path);
+        String path2 = InputValidator.sanitizeCsvContent(pair.code2.path);
+        return path1 + "," + path2 + ",\n";
     }
 
 }

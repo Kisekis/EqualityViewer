@@ -5,6 +5,7 @@ import com.nime.eqviewer.model.ResultType;
 import com.nime.eqviewer.model.SourceCode;
 import com.nime.eqviewer.model.SourceCodePair;
 import com.nime.eqviewer.repository.MemoryRepo;
+import com.nime.eqviewer.security.InputValidator;
 import com.nime.eqviewer.util.UnionFind;
 import org.springframework.stereotype.Service;
 
@@ -63,11 +64,31 @@ public class SourceCodePairServiceImpl implements SourceCodePairService{
     public String getSourceCode(SourceCode code) {
         String path = code.path;
         ResourceBundle resourceBundle = ResourceBundle.getBundle("application");
+        String basePath = resourceBundle.getString("path");
+        
+        // Validate the path to prevent path traversal attacks
+        if (!InputValidator.isValidPath(basePath, path)) {
+            throw new SecurityException("Invalid file path: potential path traversal attempt");
+        }
+        
         String content = null;
         try{
-            content = Files.readString(Path.of(resourceBundle.getString("path")+"/"+path), Charset.defaultCharset());
+            Path filePath = Path.of(basePath + "/" + path);
+            
+            // Check file size to prevent resource exhaustion
+            long fileSize = Files.size(filePath);
+            if (fileSize > InputValidator.MAX_FILE_SIZE) {
+                throw new SecurityException("File size exceeds maximum allowed size");
+            }
+            
+            content = Files.readString(filePath, Charset.defaultCharset());
+        }catch (SecurityException e) {
+            // Re-throw security exceptions
+            throw e;
         }catch (Exception e) {
-            e.printStackTrace();
+            // Log error but don't expose internal details
+            System.err.println("Error reading file: " + e.getMessage());
+            throw new RuntimeException("Error reading source code file");
         }
         return content;
     }

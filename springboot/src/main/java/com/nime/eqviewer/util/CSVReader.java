@@ -3,6 +3,7 @@ package com.nime.eqviewer.util;
 import com.nime.eqviewer.model.ResultType;
 import com.nime.eqviewer.model.SourceCode;
 import com.nime.eqviewer.model.SourceCodePair;
+import com.nime.eqviewer.security.InputValidator;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -36,8 +37,23 @@ public class CSVReader {
                 System.out.println(line);
                 if(count!=0) {
                     String[] res = line.split(",");
-                    String path1 = res[0];
-                    String path2 = res[1];
+                    if (res.length < 2) {
+                        System.err.println("Invalid CSV line format, skipping: " + line);
+                        count++;
+                        continue;
+                    }
+                    
+                    String path1 = res[0].trim();
+                    String path2 = res[1].trim();
+                    
+                    // Validate paths before processing
+                    // Note: We validate the path structure here, actual file access validation happens in service layer
+                    if (path1.isEmpty() || path2.isEmpty()) {
+                        System.err.println("Empty path detected, skipping line: " + line);
+                        count++;
+                        continue;
+                    }
+                    
                     if(!map.containsKey(path1)) {
                         map.put(path1,new SourceCode(path1,globalId));
                         globalId++;
